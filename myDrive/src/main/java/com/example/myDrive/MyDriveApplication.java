@@ -29,12 +29,14 @@ public class MyDriveApplication {
 
 
 //		test.getFileByUser(1);
-		FileUploadRequest req=new FileUploadRequest();
-		req.setEmail("kkkk@gmail.com");
-		req.setPassword("pass1");
-		req.setFileName("k.jpg");
-		req.setFileLocation("D:/source/photo.jpg");
-		fileUploadService(req);
+
+
+//		FileUploadRequest req=new FileUploadRequest();
+//		req.setEmail("kkkk@gmail.com");
+//		req.setPassword("pass1");
+//		req.setFileName("k.jpg");
+//		req.setFileLocation("D:/source/photo.jpg");
+//		fileUploadService(req);
 
 //		test.add_user_file_mapping(3,4);
 //		test.getFileByUser(4);
@@ -110,6 +112,25 @@ public class MyDriveApplication {
 		return str.hashCode();
 	}
 
+	public static ArrayList<File> getFilesByUserID(int user_id, String email, String password) throws Exception {
+		User user = null;
+		ArrayList<File> userFiles = null;
+		DBOperations db = new DBOperations();
+		user = authenticate(email, password);
+		String msg="";
+		if (user == null) {
+			//not allowed to upload a file
+			msg = "user not Authorised";
+			System.out.println("user not Authorised");
+			return null;
+		} else {
+			userFiles = db.getFileByUser(user.getUser_id());
+//			return userFiles;
+
+		}
+		return userFiles;
+	}
+
 	public static User authenticate(String email, String password) throws Exception {
 		DBOperations test=new DBOperations();
 		ArrayList<User> Allusers;
@@ -129,7 +150,7 @@ public class MyDriveApplication {
 		return res;
 	}
 
-	public static void fileUploadService(FileUploadRequest uploadDetails) throws Exception {
+	public static String fileUploadService(FileUploadRequest uploadDetails) throws Exception {
 		User user=null;
 		ArrayList<File> userFiles=null;
 		DBOperations db=new DBOperations();
@@ -138,13 +159,13 @@ public class MyDriveApplication {
 		if(user==null){
 			//not allowed to upload a file
 			msg="user not Authorised";
-			System.out.println("null");
+//			System.out.println("null");
 		}else{
 			userFiles=db.getFileByUser(user.getUser_id());
 			boolean flag=true;
 			if(userFiles!=null){
 				for(File f: userFiles){
-					if(f.getFile_name()==uploadDetails.getFileName()){
+					if(f.getFile_name().compareTo(uploadDetails.getFileName())==0){
 						msg= msg+"   "+ "user has already uploaded a file with same name try changing the name";
 						System.out.println("user has already uploaded a file with same name try changing the name");
 						flag=false;
@@ -156,12 +177,13 @@ public class MyDriveApplication {
 				msg+=uploadObject("marine-physics-349505","mydrive_99100","DriveUser/"+uploadDetails.getFileName(),uploadDetails.getFileLocation());
 //				File file=new File(uploadDetails.getFileName(),"DriveUser/"+uploadDetails.getFileName());
 				File file=db.addFile(uploadDetails.getFileName(),"DriveUser/"+uploadDetails.getFileName());
-				msg+=db.add_user_file_mapping(user.getUser_id(),file.getFile_id());
+				String msg2=db.add_user_file_mapping(user.getUser_id(),file.getFile_id());
+				System.out.println(msg2);
 			}
 
 		}
 		System.out.println(msg);
-
+		return msg;
 	}
 }
 

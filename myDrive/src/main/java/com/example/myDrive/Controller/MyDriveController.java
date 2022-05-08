@@ -1,5 +1,8 @@
 package com.example.myDrive.Controller;
 
+import com.example.myDrive.Model.File;
+import com.example.myDrive.Model.FileUploadRequest;
+import com.example.myDrive.Model.GetFilesByUserIdRequest;
 import com.example.myDrive.Model.User;
 import com.example.myDrive.MyDriveApplication;
 import org.springframework.web.bind.annotation.*;
@@ -39,6 +42,23 @@ public class MyDriveController {
 		return user.getName()+" "+user.getEmail()+" Is added to database";
 	}
 
+	@RequestMapping(value = "/uploadFile",method= RequestMethod.POST)
+	public String uploadFile(@RequestBody FileUploadRequest req) throws Exception {
+		MyDriveApplication app=new MyDriveApplication();
+		String msg= app.fileUploadService(req);
+
+		return msg;
+	}
+
+
+
+	@RequestMapping(value = "/getFilesByUserID",method= RequestMethod.POST)
+	public ArrayList<File> getFilesByUserID(@RequestBody GetFilesByUserIdRequest req) throws Exception {
+		MyDriveApplication app=new MyDriveApplication();
+		ArrayList<File> res=app.getFilesByUserID(req.getUser_id(),req.getEmail(),req.getPassword());
+
+		return res;
+	}
 
 
 }
