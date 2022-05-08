@@ -31,9 +31,14 @@ public class MyDriveController {
 	@RequestMapping(value = "/insertUser",method= RequestMethod.POST)
 	public String insertUser(@RequestBody User user) throws Exception {
 		MyDriveApplication app=new MyDriveApplication();
-		app.adduser(user);
+		User u=app.adduser(user);
+		if(u==null){
+			return "Already Registered Please try new credentials";
+		}
 		System.out.println(user.toString());
-		return user.toString()+" Is added";
+		return user.getName()+" "+user.getEmail()+" Is added to database";
 	}
+
+
 
 }

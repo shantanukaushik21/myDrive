@@ -34,18 +34,20 @@ public class User {
         this.password = password;
     }
 
-
     @Override
     public String toString() {
         return "User{" +
                 "user_id=" + user_id +
                 ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
                 '}';
     }
 
-    public User(Integer user_id, String name) {
-        this.user_id = user_id;
+    public User(String name, String email, String password) {
         this.name = name;
+        this.email = email;
+        this.password = password;
     }
 
     public int getUser_id() {
