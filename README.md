@@ -6,7 +6,7 @@ Clone and run the project in the local host.
 Things covered:
 
 1. Register users to the Drive
-2. User Authentication to upload or manipulate files.
+2. User Authentication to upload or download files.
 3. Proper IAM policies are used in the Service Accounts.
 4. Authorised users can upload files.
 5. The Authorised user sees all the files he uploaded.
