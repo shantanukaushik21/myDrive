@@ -1,9 +1,7 @@
 package com.example.myDrive;
 
 import com.example.myDrive.DBManager.DBOperations;
-import com.example.myDrive.Model.File;
-import com.example.myDrive.Model.FileUploadRequest;
-import com.example.myDrive.Model.User;
+import com.example.myDrive.Model.*;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -102,7 +100,7 @@ public class MyDriveApplication {
 		BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
 		storage.create(blobInfo, Files.readAllBytes(Paths.get(filePath)));
 
-		String message="File " + filePath + " uploaded to bucket " + bucketName + " as " + objectName;
+		String message="File at " + filePath + " is uploaded to bucket " + bucketName + "/" + objectName;
 		System.out.println(message);
 		return message;
 
@@ -112,23 +110,28 @@ public class MyDriveApplication {
 		return str.hashCode();
 	}
 
-	public static ArrayList<File> getFilesByUserID(int user_id, String email, String password) throws Exception {
+	public static GetFilesByUserIdResponse getFilesByUserID(int user_id, String email, String password) throws Exception {
+		GetFilesByUserIdResponse response;
 		User user = null;
 		ArrayList<File> userFiles = null;
 		DBOperations db = new DBOperations();
 		user = authenticate(email, password);
 		String msg="";
+		int count=0;
 		if (user == null) {
 			//not allowed to upload a file
-			msg = "user not Authorised";
+			msg = "user not Authorised, check emailId and Password";
 			System.out.println("user not Authorised");
 			return null;
 		} else {
 			userFiles = db.getFileByUser(user.getUser_id());
+			msg= "Authorization is Successful";
+			count=userFiles.size();
 //			return userFiles;
 
 		}
-		return userFiles;
+		response=new GetFilesByUserIdResponse(msg,count,userFiles);
+		return response;
 	}
 
 	public static User authenticate(String email, String password) throws Exception {
@@ -150,23 +153,27 @@ public class MyDriveApplication {
 		return res;
 	}
 
-	public static String fileUploadService(FileUploadRequest uploadDetails) throws Exception {
+	public static FileUploadResponse fileUploadService(FileUploadRequest uploadDetails) throws Exception {
+		FileUploadResponse response;
 		User user=null;
 		ArrayList<File> userFiles=null;
 		DBOperations db=new DBOperations();
 		user=authenticate(uploadDetails.getEmail(),uploadDetails.getPassword());
-		String msg="";
+		String auth="";
+		String uploadStatus="";
+		String filelocation="invalid";
 		if(user==null){
 			//not allowed to upload a file
-			msg="user not Authorised";
+			auth="user not Authorised, check emailid or password";
 //			System.out.println("null");
 		}else{
+			auth="user is authorised";
 			userFiles=db.getFileByUser(user.getUser_id());
 			boolean flag=true;
 			if(userFiles!=null){
 				for(File f: userFiles){
 					if(f.getFile_name().compareTo(uploadDetails.getFileName())==0){
-						msg= msg+"   "+ "user has already uploaded a file with same name try changing the name";
+						uploadStatus= "user has already uploaded this file, try uploading a different file";
 						System.out.println("user has already uploaded a file with same name try changing the name");
 						flag=false;
 //					return msg;
@@ -174,16 +181,16 @@ public class MyDriveApplication {
 				}
 			}
 			if(flag){
-				msg+=uploadObject("marine-physics-349505","mydrive_99100","DriveUser/"+uploadDetails.getFileName(),uploadDetails.getFileLocation());
+				uploadStatus=uploadObject("marine-physics-349505","mydrive_99100","DriveUser/"+uploadDetails.getFileName(),uploadDetails.getFileLocation());
 //				File file=new File(uploadDetails.getFileName(),"DriveUser/"+uploadDetails.getFileName());
 				File file=db.addFile(uploadDetails.getFileName(),"DriveUser/"+uploadDetails.getFileName());
-				String msg2=db.add_user_file_mapping(user.getUser_id(),file.getFile_id());
-				System.out.println(msg2);
+				filelocation=db.add_user_file_mapping(user.getUser_id(),file.getFile_id());
+				System.out.println(filelocation);
 			}
 
 		}
-		System.out.println(msg);
-		return msg;
+		response=new FileUploadResponse(auth,filelocation,uploadStatus);
+		return response;
 	}
 }
 

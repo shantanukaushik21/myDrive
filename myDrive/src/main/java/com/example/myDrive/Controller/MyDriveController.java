@@ -1,9 +1,6 @@
 package com.example.myDrive.Controller;
 
-import com.example.myDrive.Model.File;
-import com.example.myDrive.Model.FileUploadRequest;
-import com.example.myDrive.Model.GetFilesByUserIdRequest;
-import com.example.myDrive.Model.User;
+import com.example.myDrive.Model.*;
 import com.example.myDrive.MyDriveApplication;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,28 +33,26 @@ public class MyDriveController {
 		MyDriveApplication app=new MyDriveApplication();
 		User u=app.adduser(user);
 		if(u==null){
-			return "Already Registered Please try new credentials";
+			return "This email id is Already Registered";
 		}
 		System.out.println(user.toString());
-		return user.getName()+" "+user.getEmail()+" Is added to database";
+		return user.getEmail()+" is added as a user, Now he can Upload flies to his drive";
 	}
 
 	@RequestMapping(value = "/uploadFile",method= RequestMethod.POST)
-	public String uploadFile(@RequestBody FileUploadRequest req) throws Exception {
+	public FileUploadResponse uploadFile(@RequestBody FileUploadRequest req) throws Exception {
 		MyDriveApplication app=new MyDriveApplication();
-		String msg= app.fileUploadService(req);
+		FileUploadResponse response=app.fileUploadService(req);
 
-		return msg;
+		return response;
 	}
 
-
-
 	@RequestMapping(value = "/getFilesByUserID",method= RequestMethod.POST)
-	public ArrayList<File> getFilesByUserID(@RequestBody GetFilesByUserIdRequest req) throws Exception {
+	public GetFilesByUserIdResponse getFilesByUserID(@RequestBody GetFilesByUserIdRequest req) throws Exception {
 		MyDriveApplication app=new MyDriveApplication();
-		ArrayList<File> res=app.getFilesByUserID(req.getUser_id(),req.getEmail(),req.getPassword());
+		GetFilesByUserIdResponse response=app.getFilesByUserID(req.getUser_id(),req.getEmail(),req.getPassword());
 
-		return res;
+		return response;
 	}
 
 
