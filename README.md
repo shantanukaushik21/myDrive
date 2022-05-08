@@ -10,7 +10,7 @@ Things covered:
 3. Proper IAM policies are used in the Service Accounts.
 4. Authorised users can upload files.
 5. The Authorised user sees all the files he uploaded.
-6.user and file details are also stored in google bigquery(GCP).
+6. user and file data are stored in google bigquery(GCP).
 
 Future Scope:
 
