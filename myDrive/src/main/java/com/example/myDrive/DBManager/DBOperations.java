@@ -2,7 +2,6 @@ package com.example.myDrive.DBManager;
 
 import com.example.myDrive.Model.File;
 import com.example.myDrive.Model.User;
-//import org.springframework.data.jpa.repository.JpaRepository;
 import com.google.cloud.bigquery.*;
 import com.google.cloud.bigquery.BigQueryError;
 import org.springframework.stereotype.Component;
@@ -13,43 +12,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-//@Repository
-//@Component
+
 public class DBOperations{
     private BigQuery bigquery;
     boolean isConnected=false;
-//    public void createConnection() throws Exception {
-//        bigquery = BigQueryOptions.newBuilder().setProjectId("marine-physics-349505")
-//                .build().getService();
-//        final String getUsers = "SELECT * FROM `marine-physics-349505.my_Drive.User_table` LIMIT 1000";
-//        QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder(getUsers).build();
-//
-//        Job queryJob = bigquery.create(JobInfo.newBuilder(queryConfig).build());
-//        queryJob = queryJob.waitFor();
-//        // the waitFor method blocks until the job completes
-//        // and returns `null` if the job doesn't exist anymore
-//        if (queryJob == null) {
-//            throw new Exception("job no longer exists");
-//        }
-//        // once the job is done, check if any error occured
-//        if (queryJob.getStatus().getError() != null) {
-//            throw new Exception(queryJob.getStatus().getError().toString());
-//        }
-//
-//        // Step 4: Display results
-//        // Print out a header line, and iterate through the
-//        // query results to print each result in a new line
-//        System.out.println("user table");
-//        TableResult result = queryJob.getQueryResults();
-//        for (FieldValueList row : result.iterateAll()) {
-//            // We can use the `get` method along with the column
-//            // name to get the corresponding row entry
-//            String user_name = row.get("user_name").getStringValue();
-//            int userid = Integer.parseInt(row.get("user_id").getValue().toString());
-////            System.out.printf("%s\t%d\n", userid, user_name);
-//            System.out.print(userid+"    "+user_name);
-//        }
-//    }
 
     public void createConnection() throws Exception {
         if(isConnected){
@@ -59,42 +25,7 @@ public class DBOperations{
                 .build().getService();
         isConnected=true;
     }
-//    public ArrayList<User> getUsers() throws Exception {
-//        createConnection("marine-physics-349505");
-//        ArrayList<User> users = new ArrayList<>();
-//
-//        final String getUsers = "SELECT * FROM `marine-physics-349505.my_Drive.User_table` LIMIT 1000";
-//        QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder(getUsers).build();
-//
-//        Job queryJob = bigquery.create(JobInfo.newBuilder(queryConfig).build());
-//        queryJob = queryJob.waitFor();
-//        // the waitFor method blocks until the job completes
-//        // and returns `null` if the job doesn't exist anymore
-//        if (queryJob == null) {
-//            throw new Exception("job no longer exists");
-//        }
-//        // once the job is done, check if any error occured
-//        if (queryJob.getStatus().getError() != null) {
-//            throw new Exception(queryJob.getStatus().getError().toString());
-//        }
-//
-//        // Step 4: Display results
-//        // Print out a header line, and iterate through the
-//        // query results to print each result in a new line
-//        System.out.println("user table");
-//        TableResult result = queryJob.getQueryResults();
-//        for (FieldValueList row : result.iterateAll()) {
-//            // We can use the `get` method along with the column
-//            // name to get the corresponding row entry
-//            String user_name = row.get("user_name").getStringValue();
-//            int userid = Integer.parseInt(row.get("user_id").getValue().toString());
-////            System.out.printf("%s\t%d\n", userid, user_name);
-//            User user=new User(userid,user_name);
-//            users.add(user);
-//            System.out.print(userid+"    "+user_name);
-//        }
-//        return users;
-//    }
+
 
     public TableResult runQuery(String query) throws Exception {
 //        createConnection("marine-physics-349505");
@@ -115,10 +46,6 @@ public class DBOperations{
             throw new Exception(queryJob.getStatus().getError().toString());
         }
 
-        // Step 4: Display results
-        // Print out a header line, and iterate through the
-        // query results to print each result in a new line
-//        System.out.println("user table");
         TableResult result = queryJob.getQueryResults();
         return result;
     }
@@ -159,9 +86,6 @@ public class DBOperations{
         InsertAllResponse response =
                 bigquery.insertAll(
                         InsertAllRequest.newBuilder(tableId)
-                                // More rows can be added in the same RPC by invoking .addRow() on the builder.
-                                // You can also supply optional unique row keys to support de-duplication
-                                // scenarios.
                                 .addRow(rowContent)
                                 .build());
         if (response.hasErrors()) {
@@ -205,9 +129,6 @@ public class DBOperations{
         InsertAllResponse response =
                 bigquery.insertAll(
                         InsertAllRequest.newBuilder(tableId)
-                                // More rows can be added in the same RPC by invoking .addRow() on the builder.
-                                // You can also supply optional unique row keys to support de-duplication
-                                // scenarios.
                                 .addRow(rowContent)
                                 .build());
         if (response.hasErrors()) {
@@ -227,35 +148,21 @@ public class DBOperations{
 //        createConnection();
         bigquery = BigQueryOptions.newBuilder().setProjectId("marine-physics-349505")
                 .build().getService();
-//        ArrayList<File> Allfiles=new ArrayList<>();
-//        Allfiles=getFiles();
-//        int count= Allfiles.size();
-//        int file_id=count+1;
-//        System.out.println(file_id);
 
         String datasetName="my_Drive";
         String tableName="user_files_table";
 
         String msg;
-
-//        File res=new File(file_id,name,location);
-
         BigQuery bq=BigQueryOptions.getDefaultInstance().getService();
-
         Map<String, Object> rowContent = new HashMap<>();
-
 
         rowContent.put("user_id", userId);
         rowContent.put("file_id", fileId);
 //        rowContent.put("location", location);
-
         TableId tableId = TableId.of(datasetName, tableName);
         InsertAllResponse response =
                 bigquery.insertAll(
                         InsertAllRequest.newBuilder(tableId)
-                                // More rows can be added in the same RPC by invoking .addRow() on the builder.
-                                // You can also supply optional unique row keys to support de-duplication
-                                // scenarios.
                                 .addRow(rowContent)
                                 .build());
         if (response.hasErrors()) {
@@ -266,33 +173,12 @@ public class DBOperations{
             }
             return "Insert failed at user_files_table";
 //            throw new Exception("Insert Exception");
-
         }
         System.out.println("Rows successfully inserted into table");
 
         return "Rows successfully inserted in user_files_table";
     }
 
-//    public int addUser(String name, String email, String password ) throws Exception {
-//        ArrayList<User> users;
-//        users=getUsers();
-//        int count= users.size();
-//        int user_id=count+1;
-////        for(User u: users){
-////            if(u.getUser_id()==user_id){
-////                throw new Exception("User ID "+user_id+"already present");
-////            }
-////        }
-//        System.out.println(user_id);
-//
-//
-//        final String insert_user_query = "insert into `marine-physics-349505.my_Drive.User_table` values ("+user_id+",\""+name+"\",\""+email+"\",\""+password+"\")";
-//        System.out.println(insert_user_query);
-////        bigquery.query(QueryJobConfiguration.of(insert_user_query));
-//        TableResult result =runQuery(insert_user_query);
-//        System.out.println(insert_user_query);
-//        return user_id;
-//    }
     public ArrayList<User> getUsers() throws Exception {
         createConnection();
         final String getUsers = "SELECT * FROM `marine-physics-349505.my_Drive.User_table` LIMIT 1000";
@@ -344,7 +230,6 @@ public class DBOperations{
 
         File file= new File(fileid,file_name,location);
         return file;
-
     }
 
 
@@ -359,10 +244,6 @@ public class DBOperations{
 
         ArrayList<Integer> f_id= new ArrayList<>();
         for (FieldValueList row : result.iterateAll()) {
-            // We can use the `get` method along with the column
-            // name to get the corresponding row entry
-
-//            System.out.println(row.toString());
             String user_name;
             int user_id;
             int file_id;

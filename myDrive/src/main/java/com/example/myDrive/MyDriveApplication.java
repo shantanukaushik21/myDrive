@@ -23,26 +23,13 @@ public class MyDriveApplication {
 
 	public static void main(String[] args) throws Exception {
 		SpringApplication.run(MyDriveApplication.class, args);
-		DBOperations test=new DBOperations();
-
-
-//		test.getFileByUser(1);
-
-
-//		FileUploadRequest req=new FileUploadRequest();
-//		req.setEmail("kkkk@gmail.com");
-//		req.setPassword("pass1");
-//		req.setFileName("k.jpg");
-//		req.setFileLocation("D:/source/photo.jpg");
-//		fileUploadService(req);
-
-//		test.add_user_file_mapping(3,4);
-//		test.getFileByUser(4);
+//		DBOperations test=new DBOperations();
 	}
 	public static ArrayList<User> getUsers() throws Exception {
 		DBOperations test=new DBOperations();
 		return test.getUsers();
 	}
+
 	public static ArrayList<File> getFiles() throws Exception {
 		DBOperations test=new DBOperations();
 		return test.getFiles();
@@ -55,7 +42,6 @@ public class MyDriveApplication {
 		try{
 			res=test.addUser(user.getName(),user.getEmail(),user.getPassword());
 		}catch (Exception e){ return res;}
-
 		return res;
 	}
 
@@ -148,11 +134,9 @@ public class MyDriveApplication {
 				System.out.println("User is Authorised");
 				break;
 			}
-
 		}
 		return res;
 	}
-
 	public static FileUploadResponse fileUploadService(FileUploadRequest uploadDetails) throws Exception {
 		FileUploadResponse response;
 		User user=null;
