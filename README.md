@@ -1,6 +1,8 @@
 # myDrive
 JAVA project to upload data to Google cloud storage.
 
+Read the Demo.txt file to get details about Database, cloud storage buckets etc.
+
 Clone and run the project in the local host. 
 
 Things covered:
